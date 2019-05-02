@@ -1,0 +1,6 @@
+firstName,lastName,dateOfBirth,dateOfDeath,height,weight,gender,married
+John,Doe,1950-01-02,2000-02-02,1.5,80,male,true
+Marcus,Johnson,1960-02-03,2010-03-04,1.7,90,male,false
+Alfred,Smith,1970-03-04,2015-04-05,1.6,100,male,false
+Jane,Doe,1955-02-01,2005-03-03,1.6,50,female,true
+Sally,smith,1965-04-03,2012-07-12,1.55,60,female,false

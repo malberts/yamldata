@@ -1,0 +1,15 @@
+firstName: John
+lastName: Doe
+dateOfBirth: 1950-06-15
+height: 1.8
+weight: 80
+gender: male
+married: yes
+children:
+  - firstName: Johnny
+    lastName: Doe
+    dateOfBirth: 1970-01-10
+  - firstName: Jane
+    lastName: Doe
+    dateOfBirth: 1980-12-20
+

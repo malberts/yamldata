@@ -1,0 +1,15 @@
+firstName: Erik
+lastName: Thorvaldsson
+dateOfBirth: 1950-04-03
+dateOfDeath: 2003-10-11
+height: 1.8
+weight: 90
+gender: Male
+married: Yes
+children:
+  - person/children/freydis.yml # First child
+  - person/children/leif.yml # Second child
+  - person/children/thorvald.yml # Third child
+  - person/children/thorstein.yml # Fourth child
+pets:
+  - pet/hestur.yml
