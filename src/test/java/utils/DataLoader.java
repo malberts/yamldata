@@ -28,7 +28,7 @@ public class DataLoader {
         return new File(fullPath);
     }
 
-    public static <T> List<T> getDataList(String filename, Class<T> valueType) {
+    public static <T> List<T> getDataList(String filename, Class<T> valueType) throws Exception {
         String extension = getFileExtension(filename);
 
         ObjectMapper mapper;
@@ -47,15 +47,24 @@ public class DataLoader {
         }
         mapper.registerModule(new JavaTimeModule());
 
-        try {
-            MappingIterator<T> iter = mapper.readerFor(valueType)
-                    .with(schema)
-                    .readValues(getDataFile(filename));
-            return iter.readAll();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new ArrayList<>();
+        MappingIterator<T> iter = mapper.readerFor(valueType)
+                .with(schema)
+                .readValues(getDataFile(filename));
+        List<T> objects = iter.readAll();
+
+        List<String> validationErrors = new ArrayList<>();
+        for (int i = 0; i < objects.size(); i++) {
+            List<String> modelErrors = validateModel(objects.get(i));
+            if (modelErrors.size() > 0) {
+                validationErrors.add("Item " + i + " problems (" + modelErrors.size() + "):\n" + String.join("\n", modelErrors));
+            }
         }
+
+        if (validationErrors.size() > 0) {
+            throw new ValidationException("Invalid data file.\n" + "File: " + filename + "\nModel: " + valueType + "\n" + String.join("\n", validationErrors));
+        }
+
+        return objects;
     }
 
     public static <T> T getData(String filename, Class<T> valueType) throws IOException {
@@ -77,23 +86,9 @@ public class DataLoader {
         File file = getDataFile(filename);
 
         T object = mapper.readValue(file, valueType);
-
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = factory.getValidator();
-        Set<ConstraintViolation<T>> violations = validator.validate(object);
-        if (violations.size() > 0) {
-            List<String> errors = new ArrayList<>();
-            for (ConstraintViolation<T> violation : violations) {
-                String error = String.format(
-                        " - %s: %s but was: %s",
-                        violation.getPropertyPath(),
-                        violation.getMessage(),
-                        violation.getInvalidValue()
-                );
-                errors.add(error);
-            }
-            Collections.sort(errors);
-            throw new ValidationException("Invalid data file.\n" + "File: " + filename + "\nModel: " + valueType + "\nProblems (" + violations.size() + "):\n" + String.join("\n", errors));
+        List<String> validationErrors = validateModel(object);
+        if (validationErrors.size() > 0) {
+            throw new ValidationException("Invalid data file.\n" + "File: " + filename + "\nModel: " + valueType + "\nProblems (" + validationErrors.size() + "):\n" + String.join("\n", validationErrors));
         }
         return object;
     }
@@ -102,8 +97,24 @@ public class DataLoader {
         return filename.substring(filename.lastIndexOf(".") + 1).toLowerCase();
     }
 
-    public void validateModel(Object model) {
+    private static <T> List<String> validateModel(T model) {
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+        Set<ConstraintViolation<T>> violations = validator.validate(model);
 
+        List<String> errors = new ArrayList<>();
+        for (ConstraintViolation<T> violation : violations) {
+            String error = String.format(
+                    " - %s: %s but was: %s",
+                    violation.getPropertyPath(),
+                    violation.getMessage(),
+                    violation.getInvalidValue()
+            );
+            errors.add(error);
+        }
+        Collections.sort(errors);
+
+        return errors;
     }
 }
 

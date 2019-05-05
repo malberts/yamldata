@@ -13,7 +13,6 @@ import java.util.List;
 public class Person {
     @NotEmpty
     private String firstName;
-    @NotEmpty
     private String lastName;
     private LocalDate dateOfBirth;
     private LocalDate dateOfDeath;
@@ -122,7 +121,7 @@ public class Person {
         return this;
     }
 
-    public Person setChildren_fromFile(String filename) {
+    public Person setChildren_fromFile(String filename) throws Exception {
         setChildren(DataLoader.getDataList(filename, Person.class));
         return this;
     }
