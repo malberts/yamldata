@@ -8,20 +8,20 @@ import java.util.List;
 
 public class PersonTests {
     @Test
-    public void singleYaml() {
+    public void singleYaml() throws Exception {
         // Load a YML file with all the data.
         Person erik = Person.createFromFile("person/erik_the_red_single.yml");
         checkErik(erik);
     }
 
     @Test
-    public void nestedYaml() {
+    public void nestedYaml() throws Exception {
         // Load a YML file with nested YML files.
         Person erik = Person.createFromFile("person/erik_the_red_nested.yml");
         checkErik(erik);
     }
 
-    public void checkErik(Person erik) {
+    private void checkErik(Person erik) {
         // Check Erik's details
         Assert.assertEquals(erik.getFirstName(), "Erik");
         Assert.assertEquals(erik.getLastName(), "Thorvaldsson");

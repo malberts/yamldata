@@ -1,16 +1,19 @@
 package models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import utils.DataLoader;
 import utils.DateUtil;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Person {
+    @NotEmpty
     private String firstName;
+    @NotEmpty
     private String lastName;
     private LocalDate dateOfBirth;
     private LocalDate dateOfDeath;
@@ -18,11 +21,13 @@ public class Person {
     private Integer weight;
     private String gender;
     private Boolean married;
+    @Valid
     private List<Person> children = new ArrayList<>();
+    @Valid
     private List<Pet> pets = new ArrayList<>();
 
     @JsonCreator
-    public static Person createFromFile(String filename) {
+    public static Person createFromFile(String filename) throws Exception {
         return DataLoader.getData(filename, Person.class);
     }
 

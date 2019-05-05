@@ -1,0 +1,14 @@
+scenarioTitle: Invalid Values
+jiraKey: -123A
+
+processOne:
+  firstName: ~
+  lastName: ~
+
+processTwo:
+  listName: My List 123
+  items:
+    - label: ~
+      enabled: Yes
+    - label: "Item 2"
+      enabled: No

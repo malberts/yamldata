@@ -4,12 +4,12 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import utils.DataLoader;
 
 public class Pet {
-    String type;
-    String name;
-    int age;
+    private String type;
+    private String name;
+    private int age;
 
     @JsonCreator
-    public static Pet createPetFromFile(String filename) {
+    public static Pet createPetFromFile(String filename) throws Exception {
         return DataLoader.getData(filename, Pet.class);
     }
 

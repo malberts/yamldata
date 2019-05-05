@@ -1,0 +1,22 @@
+scenarioTitle: Required Fields Present
+jiraKey: ABC-123
+
+processOne:
+  firstName: John
+  lastName: Doe
+  phoneNumber: +27123456789
+
+processTwo:
+  listName: My List 123
+  items:
+    - label: "Item 1"
+      enabled: Yes
+    - label: "Item 2"
+      enabled: No
+    - label: "Item 3"
+      enabled: Yes
+
+processThree:
+  # Only one of the two values may be specified.
+  #valueOne: ABC
+  valueTwo: DEF

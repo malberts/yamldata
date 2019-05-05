@@ -1,31 +1,31 @@
 package utils;
 
 import com.fasterxml.jackson.core.FormatSchema;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.node.IntNode;
+import com.fasterxml.jackson.databind.MappingIterator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import models.Person;
 
+import javax.validation.*;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class DataLoader {
     private final static String DATA_DIR = "data";
 
-    private static InputStream getDataStream(String fileName) {
-        return DataLoader.class.getClassLoader().getResourceAsStream(DATA_DIR + "/" + fileName);
+    private static File getDataFile(String fileName) {
+        String resourcePath = DATA_DIR + "/" + fileName;
+
+        String fullPath;
+        try {
+            fullPath = Objects.requireNonNull(DataLoader.class.getClassLoader().getResource(resourcePath)).getFile();
+        } catch (NullPointerException e) {
+            throw new IllegalArgumentException("Missing data file: " + resourcePath);
+        }
+        return new File(fullPath);
     }
 
     public static <T> List<T> getDataList(String filename, Class<T> valueType) {
@@ -50,7 +50,7 @@ public class DataLoader {
         try {
             MappingIterator<T> iter = mapper.readerFor(valueType)
                     .with(schema)
-                    .readValues(DataLoader.getDataStream(filename));
+                    .readValues(getDataFile(filename));
             return iter.readAll();
         } catch (IOException e) {
             e.printStackTrace();
@@ -58,7 +58,7 @@ public class DataLoader {
         }
     }
 
-    public static <T> T getData(String filename, Class<T> valueType) {
+    public static <T> T getData(String filename, Class<T> valueType) throws IOException {
         String extension = getFileExtension(filename);
 
         ObjectMapper mapper;
@@ -74,18 +74,36 @@ public class DataLoader {
         }
 
         mapper.registerModule(new JavaTimeModule());
+        File file = getDataFile(filename);
 
-        T object = null;
-        try {
-            object = mapper.readValue(getDataStream(filename), valueType);
-        } catch (IOException e) {
-            e.printStackTrace();
+        T object = mapper.readValue(file, valueType);
+
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+        Set<ConstraintViolation<T>> violations = validator.validate(object);
+        if (violations.size() > 0) {
+            List<String> errors = new ArrayList<>();
+            for (ConstraintViolation<T> violation : violations) {
+                String error = String.format(
+                        " - %s: %s but was: %s",
+                        violation.getPropertyPath(),
+                        violation.getMessage(),
+                        violation.getInvalidValue()
+                );
+                errors.add(error);
+            }
+            Collections.sort(errors);
+            throw new ValidationException("Invalid data file.\n" + "File: " + filename + "\nModel: " + valueType + "\nProblems (" + violations.size() + "):\n" + String.join("\n", errors));
         }
         return object;
     }
 
     private static String getFileExtension(String filename) {
         return filename.substring(filename.lastIndexOf(".") + 1).toLowerCase();
+    }
+
+    public void validateModel(Object model) {
+
     }
 }
 
