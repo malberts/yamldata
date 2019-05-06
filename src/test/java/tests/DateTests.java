@@ -5,6 +5,7 @@ import org.testng.annotations.Test;
 import utils.DateUtil;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class DateTests {
     @Test
@@ -39,6 +40,13 @@ public class DateTests {
     public void nextWeek() {
         LocalDate date = DateUtil.createDate("next week");
         LocalDate expected = LocalDate.now().plusWeeks(1);
+        Assert.assertEquals(date, expected);
+    }
+
+    @Test
+    public void todayString() {
+        String date = DateUtil.createDate("today", "dd/MM/yyyy");
+        String expected = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         Assert.assertEquals(date, expected);
     }
 }

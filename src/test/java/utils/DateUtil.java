@@ -1,6 +1,7 @@
 package utils;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class DateUtil {
     public static LocalDate createDate(String dateString) {
@@ -27,5 +28,10 @@ public class DateUtil {
                 localDate = LocalDate.parse(dateString);
         }
         return localDate;
+    }
+
+    public static String createDate(String dateString, String format) {
+        LocalDate date = createDate(dateString);
+        return date.format(DateTimeFormatter.ofPattern(format));
     }
 }
