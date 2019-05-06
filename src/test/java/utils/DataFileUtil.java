@@ -13,7 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-public class DataLoader {
+public class DataFileUtil {
     private final static String DATA_DIR = "data";
 
     private static File getDataFile(String fileName) {
@@ -21,7 +21,7 @@ public class DataLoader {
 
         String fullPath;
         try {
-            fullPath = Objects.requireNonNull(DataLoader.class.getClassLoader().getResource(resourcePath)).getFile();
+            fullPath = Objects.requireNonNull(DataFileUtil.class.getClassLoader().getResource(resourcePath)).getFile();
         } catch (NullPointerException e) {
             throw new IllegalArgumentException("Missing data file: " + resourcePath);
         }

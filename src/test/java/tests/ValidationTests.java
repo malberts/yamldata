@@ -3,7 +3,7 @@ package tests;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import models.*;
 import org.testng.annotations.Test;
-import utils.DataLoader;
+import utils.DataFileUtil;
 
 import javax.validation.ValidationException;
 
@@ -13,12 +13,12 @@ public class ValidationTests {
             expectedExceptionsMessageRegExp = "Missing data file.*"
     )
     public void missingFile() throws Exception {
-        E2EScenario scenario = DataLoader.getData("scenarios/Missing.yml", E2EScenario.class);
+        E2EScenario scenario = DataFileUtil.getData("scenarios/Missing.yml", E2EScenario.class);
     }
 
     @Test
     public void requiredFieldsPresent() throws Exception {
-        E2EScenario scenario = DataLoader.getData("scenarios/RequiredFieldsPresent.yml", E2EScenario.class);
+        E2EScenario scenario = DataFileUtil.getData("scenarios/RequiredFieldsPresent.yml", E2EScenario.class);
 
         ProcessOne one = scenario.getProcessOne();
         if (one != null) {
@@ -55,7 +55,7 @@ public class ValidationTests {
 
     )
     public void requiredFieldsMissing() throws Exception {
-        E2EScenario scenario = DataLoader.getData("scenarios/RequiredFieldsMissing.yml", E2EScenario.class);
+        E2EScenario scenario = DataFileUtil.getData("scenarios/RequiredFieldsMissing.yml", E2EScenario.class);
     }
 
     @Test(
@@ -63,7 +63,7 @@ public class ValidationTests {
             expectedExceptionsMessageRegExp = "Unrecognized field \"extra\".*"
     )
     public void undefinedFields() throws Exception {
-        E2EScenario scenario = DataLoader.getData("scenarios/UndefinedFields.yml", E2EScenario.class);
+        E2EScenario scenario = DataFileUtil.getData("scenarios/UndefinedFields.yml", E2EScenario.class);
     }
 
     @Test(
@@ -76,6 +76,6 @@ public class ValidationTests {
                     "processTwo.items\\[0\\].label: must not be empty but was: null.*"
     )
     public void invalidValues() throws Exception {
-        E2EScenario scenario = DataLoader.getData("scenarios/InvalidValues.yml", E2EScenario.class);
+        E2EScenario scenario = DataFileUtil.getData("scenarios/InvalidValues.yml", E2EScenario.class);
     }
 }

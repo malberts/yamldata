@@ -1,7 +1,7 @@
 package models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import utils.DataLoader;
+import utils.DataFileUtil;
 
 public class Pet {
     private String type;
@@ -10,7 +10,7 @@ public class Pet {
 
     @JsonCreator
     public static Pet createPetFromFile(String filename) throws Exception {
-        return DataLoader.getData(filename, Pet.class);
+        return DataFileUtil.getData(filename, Pet.class);
     }
 
     public String getType() {

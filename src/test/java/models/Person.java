@@ -1,7 +1,7 @@
 package models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import utils.DataLoader;
+import utils.DataFileUtil;
 import utils.DateUtil;
 
 import javax.validation.Valid;
@@ -27,7 +27,7 @@ public class Person {
 
     @JsonCreator
     public static Person createFromFile(String filename) throws Exception {
-        return DataLoader.getData(filename, Person.class);
+        return DataFileUtil.getData(filename, Person.class);
     }
 
     public String getFirstName() {
@@ -122,7 +122,7 @@ public class Person {
     }
 
     public Person setChildren_fromFile(String filename) throws Exception {
-        setChildren(DataLoader.getDataList(filename, Person.class));
+        setChildren(DataFileUtil.getDataList(filename, Person.class));
         return this;
     }
 

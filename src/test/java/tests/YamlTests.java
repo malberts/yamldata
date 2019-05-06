@@ -3,7 +3,7 @@ package tests;
 import models.Person;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import utils.DataLoader;
+import utils.DataFileUtil;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -50,7 +50,7 @@ public class YamlTests {
     @Test
     public void simple() throws Exception {
         // Load a simple model from a YAML file.
-        Person parent = DataLoader.getData("person_simple.yml", Person.class);
+        Person parent = DataFileUtil.getData("person_simple.yml", Person.class);
 
         Assert.assertEquals(parent.getFirstName(), "John");
         Assert.assertEquals(parent.getLastName(), "Doe");
@@ -68,7 +68,7 @@ public class YamlTests {
     @Test
     public void partial() throws Exception {
         // Load a partial model from a YAML file.
-        Person parent = DataLoader.getData("person_partial.yml", Person.class);
+        Person parent = DataFileUtil.getData("person_partial.yml", Person.class);
 
         // Create a list of children linked to the parent.
         List<Person> children = Arrays.asList(
@@ -100,8 +100,8 @@ public class YamlTests {
     @Test
     public void partialMultiple() throws Exception {
         // Load a partial model from a YAML file.
-        Person parent = DataLoader.getData("person_partial.yml", Person.class);
-        List<Person> children = Arrays.asList(DataLoader.getData("children_doe.yml", Person[].class));
+        Person parent = DataFileUtil.getData("person_partial.yml", Person.class);
+        List<Person> children = Arrays.asList(DataFileUtil.getData("children_doe.yml", Person[].class));
         parent.setChildren(children);
 
         Assert.assertEquals(parent.getFirstName(), "John");
@@ -123,7 +123,7 @@ public class YamlTests {
     @Test
     public void nestedFiles() throws Exception {
         // Load a nested model from a YAML file.
-        Person parent = DataLoader.getData("person_nested.yml", Person.class);
+        Person parent = DataFileUtil.getData("person_nested.yml", Person.class);
 
         Assert.assertEquals(parent.getFirstName(), "John");
         Assert.assertEquals(parent.getLastName(), "Johnson");
@@ -144,7 +144,7 @@ public class YamlTests {
     @Test
     public void multipleNestedFiles() throws Exception {
         // Load a nested models from nested files..
-        Person parent = DataLoader.getData("person_haraldsson.yml", Person.class);
+        Person parent = DataFileUtil.getData("person_haraldsson.yml", Person.class);
 
         Assert.assertEquals(parent.getFirstName(), "Harald");
         Assert.assertEquals(parent.getLastName(), "Haraldsson");
@@ -164,7 +164,7 @@ public class YamlTests {
 
     @Test
     public void csvList() throws Exception {
-        List<Person> children = DataLoader.getDataList("children_peters.csv", Person.class);
+        List<Person> children = DataFileUtil.getDataList("children_peters.csv", Person.class);
 
         Assert.assertEquals(children.size(), 2);
         Assert.assertEquals(children.get(0).getFirstName(), "Billy");
@@ -173,7 +173,7 @@ public class YamlTests {
 
     @Test
     public void ymlList() throws Exception {
-        List<Person> people = DataLoader.getDataList("children_haraldsson.yml", Person.class);
+        List<Person> people = DataFileUtil.getDataList("children_haraldsson.yml", Person.class);
 
         Assert.assertEquals(people.size(), 2);
         Assert.assertEquals(people.get(0).getFirstName(), "Eric");
